@@ -25,7 +25,26 @@ Two users are suspected of creating their own web server on the corporate networ
       - Uploading `june11.dll` to [VirusTotal.com](https://www.virustotal.com/gui/) for analysis reveals that the malicious file is a Trojan Horse. 
       - ![](Images/TT%20VirusTotal%20classifies%20file%20as%20trojan.JPG)
 
-
 ### Scenario 2: Spotting an infected Windows host on the network
-
+The Security team received reports of an infected Windows host on the network. The machines in the network live in the range `172.16.4.0/24`. The domain `mind-hammer.net` is associated with the infected computer. The Domain Controller for the network is located at `172.16.4.4` and is named Mind-Hammer-DC. We are tasked to inspect the traffic to determine more details about the infected Windows machine and determine where the infection originated. 
+   * Investigating the infected Windows machine. 
+      - To find the infected Windows machine, we need to first filter for DNS traffic within the IP address range to see which devices are communicating with the domain controller. 
+      - Filtering for `ip.addr==172.16.4.0/24 && dns` gives us these results. 
+      - ![](Images/VWM%20Rotterdam%20PC%20Hostname.JPG)
+      - A machine with the IP address of `172.16.4.205` is seen communicating with the domain `mind-hammer.net`.
+      - Now that we have determined that this is the infected machine, we can now filter for traffic from this address to determine its hostname and MAC address.
+      - Filtering for `ip.addr==172.16.4.205` gives us this result.
+      - ![](Images/VWM%20host%20name%20and%20IP%20address%20of%20infected%20computer.JPG)
+      - The hostname is `ROTTERDAM-PC` and its MAC address is `00:59:07:b0:63:a4`. 
+      - To find the Windows username associated with this we need to filter for traffic coming from `172.16.4.205` that uses the Kerberos protocol.
+          - Kerberos is the protocol used to authenticate service requests between two or more hosts. This will be useful in finding our host. 
+      - Filtering for `ip.addr==172.16.4.205 && kerberos.CNameString` gives us this result.
+      - ![](Images/VWM%20Windows%20username%20of%20infected%20computer.JPG)
+          - The username of the Windows user whose computer is infected is `mattijs.dervies`.
+   * Finding the infection originated.
+      - To find the IP traffic used to infect the Windows computer, we need to search for conversations between `172.16.4.205` and another computer.
+      - Going into `Statistics > Conversations` in Wireshark shows all the conversations in the packet capture.
+      - Filtering for only conversations that include `172.16.4.205` shows us these results.
+      - ![](Images/VWM%20IP%20address%20used%20in%20the%20actual%20infection%20traffic.JPG) 
+          - The IP address used to infect the computer is `185.243.115.84`. This is because the amount of data transmitted from this address is significantly higher than other forms of data sent to `172.16.4.205`.
 ### Scneario 3: Identifying Illegal Downloads
