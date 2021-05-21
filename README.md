@@ -1,5 +1,5 @@
 # WireShark Project
-### Analyzing packet captures using WireShark to identify three cases of suspicious activity inside the network. 
+### Analyzing packet captures using WireShark to identify three cases of suspicious activity inside a corporate network. 
 #### By Glen Abalayan
 
 * You can recreate the lab environment on your own device by using `curl` to download the file with this URL: http://tinyurl.com/yaajh8o8
