@@ -7,18 +7,18 @@ Two users are suspected of creating their own web server on the corporate networ
   * Finding the Domain Controller of the Active Directory network
      - To locate the IP address of the custom server, filter for traffic within the IP address range that uses the LDAP protocol in WireShark.
         - **LDAP** (Lightweight Directory Access Protocol) is the protocol used by Active Directory for directory services authentication. 
-        - Filtering for `ip.addr==10.6.12.0/24 && ldap` in WireShark gives us these results.
-        - ![](Images/TT%20IP%20address%20of%20Domain%20Controller%20of%20AD%20network.JPG)
-        - Filtering for these results reveals that the IP address of the Domain Controller is `10.6.12.12`.
+     - Filtering for `ip.addr==10.6.12.0/24 && ldap` in WireShark gives us these results.
+     - ![](Images/TT%20IP%20address%20of%20Domain%20Controller%20of%20AD%20network.JPG)
+      - The IP address of the Domain Controller is `10.6.12.12`.
    * Finding the custom site
       - To find the domain name of the custom site, filter for traffic within the IP address range that uses DNS protocol.
-      - **DNS** (Domain Name System) is the protocol used to translate domain names to IP addreses. This will be useful for finding the site. 
+        - **DNS** (Domain Name System) is the protocol used to translate domain names to IP addreses. This will be useful for finding the site. 
       - Filtering for `ip.addr==10.6.12.0/24 && dns` in WireShark gives us theses results.
       - ![](Images/TT%20DNS%20and%20Ip%20address%20of%20custom%20site.JPG)
-      - Filtering for DNS traffic shows that the custom site's domain name is `frank-n-ted.com`
+      - The custom site's domain name is `frank-n-ted.com`
    * Identifying the malware
       - To identify the malware downloaded onto the network, filter for traffic within the IP address range that is requesting files from the internet.
-      - The **HTTP GET** request method is used to request a resource from an online server. This will be useful to find dowloaded files. 
+        - The **HTTP GET** request method is used to request a resource from an online server. This will be useful to find dowloaded files. 
       - Filtering the packet capture for `ip.addr==10.6.12.0/24 && http.request.method==GET` gives us these results.
       - ![](Images/TT%20wireshark%20query%20to%20show%20malware%20dowloaded%20to%20machine.JPG)
       - A machine with the IP address of `10.6.12.203` downloaded a file called `june11.dll`. 
