@@ -5,7 +5,7 @@
 * You can recreate the lab environment on your own device by using `curl` to download the file with this URL: http://tinyurl.com/yaajh8o8
     - Example: `curl -L -o pcap.pcap http://tinyurl.com/yaajh808`
 
-### Scenario 1: Discovering malware downloaded to the network
+### Scenario 1: Discovering malware downloaded on the network
 Two users are suspected of creating their own web server on the corporate network. They have successfully set up an Active Directory network and are allegedly downloading malware. We are tasked to investigate the created server and determine what type of malware is being downloaded. The users' IP addresses are somehwere in the range of `10.6.12.0/24`.
   * Finding the Domain Controller of the Active Directory network
      - To locate the IP address of the custom server, filter for traffic within the IP address range that uses the LDAP protocol in WireShark.
