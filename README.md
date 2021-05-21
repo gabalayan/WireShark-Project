@@ -27,7 +27,7 @@ Two users are suspected of creating their own web server on the corporate networ
 
 ### Scenario 2: Spotting an infected Windows host on the network
 The Security team received reports of an infected Windows host on the network. The machines in the network live in the range `172.16.4.0/24`. The domain `mind-hammer.net` is associated with the infected computer. The Domain Controller for the network is located at `172.16.4.4` and is named Mind-Hammer-DC. We are tasked to inspect the traffic to determine more details about the infected Windows machine and determine where the infection originated. 
-   * Investigating the infected Windows machine. 
+   * Investigating the infected Windows machine
       - To find the infected Windows machine, we need to first filter for DNS traffic within the IP address range to see which devices are communicating with the domain controller. 
       - Filtering for `ip.addr==172.16.4.0/24 && dns` gives us these results. 
       - ![](Images/VWM%20Rotterdam%20PC%20Hostname.JPG)
@@ -41,10 +41,31 @@ The Security team received reports of an infected Windows host on the network. T
       - Filtering for `ip.addr==172.16.4.205 && kerberos.CNameString` gives us this result.
       - ![](Images/VWM%20Windows%20username%20of%20infected%20computer.JPG)
           - The username of the Windows user whose computer is infected is `mattijs.dervies`.
-   * Finding the infection originated.
+   * Determining where the infection originated
       - To find the IP traffic used to infect the Windows computer, we need to search for conversations between `172.16.4.205` and another computer.
       - Going into `Statistics > Conversations` in Wireshark shows all the conversations in the packet capture.
       - Filtering for only conversations that include `172.16.4.205` shows us these results.
       - ![](Images/VWM%20IP%20address%20used%20in%20the%20actual%20infection%20traffic.JPG) 
           - The IP address used to infect the computer is `185.243.115.84`. This is because the amount of data transmitted from this address is significantly higher than other forms of data sent to `172.16.4.205`.
 ### Scneario 3: Identifying Illegal Downloads
+The IT team has been informed that some users have been torrenting on the corporate network. While the security team does not explicity forbid the use of torrents, they have a strict policy against copyright infringement. The machines using torrents are located in the range `10.0.0.0/24` and the domain controller is located at `10.0.0.2`.  We are tasked to investigate the machine responsible for torrenting and find out which torrent file was downloaded. 
+   * Identifying the machine used for torrents
+      - To find the machine torrenting files, we need to find which devices are communicating with the domain controller. We can filter for packets that use the `LDAP` protocol to find this. 
+      - Filtering for `ip.addr==10.0.0.0/24 && ldap` gives us these results
+      - ![](Images/ID%20MAC%20Address.JPG)
+          - The machine communicating with the domain controller has an IP address of `10.0.0.201` and a MAC address of `00:16:17:18:66:c8`.
+      - To find the username of the Windows computer responsible for torrenting files we need to filter for traffic cooming from `10.0.0.201` that uses the Kerberos protocol. 
+      - Filtering for `ip.addr==10.0.0.201 && kerberos.CNameString` gives us these results.
+      - ![](Images/ID%20Username.JPG)
+           - The username associated with the computer used for torrenting is `elmer.blanco`.
+      - To find the OS version of the Windows computer, we need to filter for traffic coming from `10.0.0.201` that uses the HTTP protocol.
+           - Headers for HTTP include the User-Agent, as well as the OS version. This will be useful to determine the operating system of Elmer's computer.
+       - Applying the filter for `ip.addr==10.0.0.201 && http` gives us these results
+       - ![](Images/ID%20OS%20Version.JPG)
+           - The OS version of Elmer's computer is `Windows NT 10.0 x64`.
+   * Examining the torrent file downloaded
+       - To find the torrent file downloaded, we need to filter for traffic from `10.0.0.201` using `HTTP GET` requests and use the find feature (Cntrl + F) for "torrent".
+       - Applying this filter to the packet capture gives us this result
+       - ![](Images/ID%20Torrent%20Download.JPG)
+           - The torrent file downlaoded was a movie titled `Betty Boop Rhythm on the Reservation`. 
+           - The torrented file violated copyright and requires immediate removal. 
