@@ -1,5 +1,5 @@
 # WireShark Project
-### Analyzing packet captures using WireShark to identify three cases of suspicious activity inside a corporate network. 
+### Investigating packet captures using WireShark to discover malware, infected machines, and illegal torrent downloads within a corporate network.
 #### By Glen Abalayan
 
 * You can recreate the lab environment on your own device by using `curl` to download the file with this URL: http://tinyurl.com/yaajh8o8
